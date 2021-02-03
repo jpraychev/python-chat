@@ -6,16 +6,10 @@ import sys
 import subprocess
 import os 
 
-# import tkinter
-
-
 def receive_msg():
     while True:
         try:
             msg = client_socket.recv(BUFFERSIZE).decode("utf8")
-            # msg_list.insert(tkinter.END, msg)
-            # For debuggin purposes only
-            # Comment when finish
             print(msg)
         except OSError as error:
             return error
@@ -23,10 +17,6 @@ def receive_msg():
 
 
 def send_msg():
-    # msg = my_msg.get()
-    # my_msg.set("")  # Clears input field.
-    # client_socket.send(bytes(msg, "utf8"))
-
     while True:
         try:
             msg = input()
@@ -36,9 +26,6 @@ def send_msg():
                 clean_exit()
         except EOFError:
             clean_exit()
-        # top.quit()
-
-
 
 def clean_exit():
     client_socket.send('exit()'.encode('utf8'))
@@ -46,7 +33,6 @@ def clean_exit():
     sys.exit(0)
 
 def handler(signal_received, frame):
-    # Handle any cleanup here
     clean_exit()
 
 if __name__ == '__main__':
@@ -63,12 +49,9 @@ if __name__ == '__main__':
     client_socket.connect(ADDR)
     receive_thread = Thread(target=receive_msg)
     receive_thread.start()
-
-    # tkinter.mainloop()  # Starts GUI execution.
-
+    
     send_msg()
-    # send_thread = Thread(target=send_msg)
-    # send_thread.start()
+
 
 
 
