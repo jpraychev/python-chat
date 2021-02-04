@@ -20,7 +20,7 @@ def single_client(client):
 
     # client_name = client.recv(BUFFERSIZE).decode()
     client_name = 'Annonymous'
-    welcome_msg = f'Welcome {client_name}. If you want to exit type exit() or press Ctrl+D.\n\If you want to change you name type name(<your-name>)'
+    welcome_msg = f'Welcome {client_name}.\nType exit() or press CTRL+D or CTRL+C to exit.\nType name() <your-name>, e.g. name() jraychev.'
     client.send(welcome_msg.encode())
     chat_msg = f'{client_name} has joined the room'
     broadcast_msg(chat_msg.encode())
@@ -29,16 +29,13 @@ def single_client(client):
     while True:
         msg = client.recv(BUFFERSIZE)
 
-        if msg == 'online()'.encode('utf8'):
-            num_clients = get_clients()
-            print(num_clients)
-        if 'name()'.encode('utf8') in msg:
-            new_client_name = msg.decode('utf8').replace('name() ', '')
-            print(f'your new name should be {new_client_name}')
+        if msg == 'online()'.encode('utf8'):            
+            real_clients_num, real_clients_name = get_clients()
+            client.send(f'Online users {real_clients_num} : {real_clients_name}'.encode('utf8'))
+        elif NAME_CMD.encode('utf8') in msg:
+            new_client_name = msg.decode('utf8').replace(NAME_CMD + ' ', '')
             clients[client] = new_client_name
-            # new_client_name = msg.replace('name() ', '')
-            # clients[client] = new_client_name
-        elif msg == EXIT_STR.encode('utf8'):
+        elif msg == EXIT_CMD.encode('utf8'):
             print(f'{clients[client]} has disconnected ')
             client.send('You are leaving the room...'.encode())
             client.close()
@@ -50,7 +47,16 @@ def single_client(client):
             broadcast_msg(msg, clients[client] + ': ')
 
 def get_clients():
-    return len(clients)
+    
+    real_clients_num = 0
+    real_clients_name = []
+
+    for k,v in clients.items():
+        if v != 'Annonymous':
+            real_clients_num += 1
+            real_clients_name.append(v)
+
+    return real_clients_num, real_clients_name
 
 def broadcast_msg(msg, name=""):
 
@@ -65,7 +71,8 @@ if __name__ == "__main__":
     PORT = 33336
     BUFFERSIZE = 1024
     ADDR = (HOST, PORT)
-    EXIT_STR = "exit()"
+    EXIT_CMD = "exit()"
+    NAME_CMD = "name()"
     SERVER = socket(AF_INET, SOCK_STREAM)
     SERVER.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     SERVER.bind(ADDR)
