@@ -15,7 +15,6 @@ def receive_msg():
             return error
             break
 
-
 def send_msg():
     while True:
         try:

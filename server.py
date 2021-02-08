@@ -43,6 +43,8 @@ def single_client(client):
             del clients[client]
             broadcast_msg(f'{client_leaving} has left the room!'.encode())
             break
+        elif '@'.encode('utf8') in msg:
+            unicast_msg(msg, client)
         else:
             broadcast_msg(msg, clients[client] + ': ')
 
@@ -62,6 +64,15 @@ def broadcast_msg(msg, name=""):
 
     for client in clients:
         client.send(name.encode() + msg)
+
+def unicast_msg(msg, client):
+    # Get only name by removing @
+    msg = msg.decode('utf8')
+    refered_client, client_msg = msg.split(' ',1)
+    client_to_connect = refered_client.strip('@')
+    for k,v in clients.items():
+        if v == client_to_connect:
+            k.send(f'{clients[client]} -> {client_to_connect}: {client_msg}'.encode('utf8'))
         
 if __name__ == "__main__":
 
