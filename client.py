@@ -13,7 +13,7 @@ def receive_msg():
             print(msg)
         except OSError as error:
             return error
-            break
+            # break
 
 def send_msg():
     while True:
