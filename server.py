@@ -19,7 +19,7 @@ def incomming_connections():
 def single_client(client):
 
     # client_name = client.recv(BUFFERSIZE).decode()
-    client_name = 'Annonymous'
+    client_name = 'Anonymous'
     welcome_msg = f'Welcome {client_name}.\nType exit() or press CTRL+D or CTRL+C to exit.\nType name() <your-name>, e.g. name() jraychev.'
     client.send(welcome_msg.encode())
     chat_msg = f'{client_name} has joined the room'
@@ -54,7 +54,7 @@ def get_clients():
     real_clients_name = []
 
     for k,v in clients.items():
-        if v != 'Annonymous':
+        if v != 'Anonymous':
             real_clients_num += 1
             real_clients_name.append(v)
 
