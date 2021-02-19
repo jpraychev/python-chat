@@ -1,9 +1,7 @@
-
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 from signal import signal, SIGINT
 import sys
-import subprocess
 import os 
 
 def receive_msg():
@@ -13,7 +11,6 @@ def receive_msg():
             print(msg)
         except OSError as error:
             return error
-            # break
 
 def send_msg():
     while True:
